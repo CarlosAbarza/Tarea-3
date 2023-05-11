@@ -1,10 +1,22 @@
+#include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "heap.h"
 #include "printGen.h"
 
+void lecturaAgregar(Heap *pq) {
+  char *tarea = (char*) malloc(30*sizeof(char));
+  size_t max = 30;
+  int prioridad;
 
+  printf("Ingrese el nombre de la tarea: ");
+  getline(&tarea, &max, stdin);
+  printf("Ingrese su nivel de prioridad: ");
+  scanf("%d", &prioridad);
+  getchar();
+  heap_push(pq, tarea, prioridad);
+}
 
 
 
@@ -23,17 +35,19 @@ int main() {
       strcpy(opcion, "next");
     switch (opcion[0]) {
       case '1' :
+        lecturaAgregar(pq);
         printf("funciona\n");
         break;
 
       case '2' :
-        printf("no funciona\n");
-        break;
+        
+        // break;
 
       case '3' :
-        break;
+        // break;
 
       case '4' :
+        printf("Aun en desarrollo\n");
         break;
 
       case '0' :
