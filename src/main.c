@@ -18,6 +18,17 @@ void lecturaAgregar(Heap *pq) {
   heap_push(pq, tarea, prioridad);
 }
 
+void establecerPrior(Heap* pq) {
+  char *tareaPrim = (char*) malloc(30*sizeof(char));
+  size_t max = 30;
+  getline(&tareaPrim, &max, stdin);
+
+  char *tareaSec = (char*) malloc(30*sizeof(char));
+  max = 30;
+  getline(&tareaSec, &max, stdin);
+  
+}
+
 
 
 
@@ -36,7 +47,6 @@ int main() {
     switch (opcion[0]) {
       case '1' :
         lecturaAgregar(pq);
-        printf("funciona\n");
         break;
 
       case '2' :
