@@ -4,6 +4,13 @@
 #include "heap.h"
 #include "printGen.h"
 
+
+
+
+
+
+
+
 int main() {
   Heap *pq = createHeap();
 
@@ -21,6 +28,12 @@ int main() {
 
       case '2' :
         printf("no funciona\n");
+        break;
+
+      case '3' :
+        break;
+
+      case '4' :
         break;
 
       case '0' :

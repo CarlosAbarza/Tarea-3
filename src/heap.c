@@ -67,7 +67,7 @@ void heap_push(Heap* pq, void* data, int priority){
   int aux = pq->size;
   pq->size++;
 
-  while (pq->heapArray[aux].priority > pq->heapArray[(aux-1) / 2].priority) {
+  while (pq->heapArray[aux].priority < pq->heapArray[(aux-1) / 2].priority) {
     heapElem temp = pq->heapArray[aux];
     pq->heapArray[aux] = pq->heapArray[(aux-1)/2];
     aux = (aux-1) / 2;
@@ -79,12 +79,13 @@ void heap_push(Heap* pq, void* data, int priority){
 void reordenar(Heap *pq) {
   int aux = 0;
   while (aux*2 + 2 <= pq->size) {
-    if (pq->heapArray[aux].priority > pq->heapArray[2*aux + 1].priority) 
+    int hijoIzq = pq->heapArray[2*aux + 1].priority;
+    int hijoDer = pq->heapArray[2*aux + 2].priority;
+    if (pq->heapArray[aux].priority > hijoIzq && pq->heapArray[aux].priority < hijoDer) 
       return;
-    else if (pq->heapArray[aux].priority > pq->heapArray[2*aux + 2].priority)
-      return;
+      
 
-    else if (pq->heapArray[(2*aux) + 1].priority > pq->heapArray[(2*aux) + 2].priority) {
+    else if (hijoIzq < hijoDer) {
       heapElem temp = pq->heapArray[aux];
       pq->heapArray[aux] = pq->heapArray[2*aux + 1];
       aux = aux*2 + 1;
