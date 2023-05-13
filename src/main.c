@@ -10,7 +10,9 @@
 typedef struct {
   char *nombre;
   int prior;
-  List *post;
+  int completa;
+  int n_prec;
+  List *prec;
 } Tarea;
 
 void lecturaAgregar(HashMap *lista) {
@@ -24,9 +26,11 @@ void lecturaAgregar(HashMap *lista) {
   scanf("%d", &prioridad);
   getchar();
   Tarea *data = (Tarea*) malloc(sizeof(Tarea));
-  data->nombre = tarea;
+  data->nombre = strdup(tarea);
   data->prior = prioridad;
-  data->post = createList();
+  data->completa = 0;
+  data->n_prec = 0;
+  data->prec = createList();
   
   insertMap(lista, tarea, data);
 }
@@ -43,17 +47,16 @@ void establecerPrior(HashMap *lista) {
   getline(&tareaSec, &max, stdin);
 
   Pair *aux = searchMap(lista, tareaSec);
-  if (!aux) {
-    printf("Una de las tareas no fue ingresada\n");
-    return;
-  }
   Pair *princ = searchMap(lista, tareaPrim);
-  if(!princ) {
+  if(!aux || !princ) {
     printf("Una de las tareas no fue ingresada\n");
     return;
   }
-  Tarea *dataPrin = princ->value;
-  pushFront(dataPrin->post, aux->value);
+  Tarea *dataSec = aux->value;
+  pushFront(dataSec->prec, princ->value);
+  dataSec->n_prec++;
+  free(tareaPrim);
+  free(tareaSec);
   return;
 }
 
