@@ -2,10 +2,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "hashmap.h"
 #include "heap.h"
+#include "list.h"
 #include "printGen.h"
 
-void lecturaAgregar(Heap *pq) {
+typedef struct {
+  char *nombre;
+  int prior;
+  List *post;
+} Tarea;
+
+void lecturaAgregar(HashMap *lista) {
   char *tarea = (char*) malloc(30*sizeof(char));
   size_t max = 30;
   int prioridad;
@@ -15,27 +23,50 @@ void lecturaAgregar(Heap *pq) {
   printf("Ingrese su nivel de prioridad: ");
   scanf("%d", &prioridad);
   getchar();
-  heap_push(pq, tarea, prioridad);
+  Tarea *data = (Tarea*) malloc(sizeof(Tarea));
+  data->nombre = tarea;
+  data->prior = prioridad;
+  data->post = createList();
+  
+  insertMap(lista, tarea, data);
 }
 
-void establecerPrior(Heap* pq) {
+void establecerPrior(HashMap *lista) {
   char *tareaPrim = (char*) malloc(30*sizeof(char));
   size_t max = 30;
+  printf("Ingrese la tarea que debe realizarse primero:");
   getline(&tareaPrim, &max, stdin);
 
   char *tareaSec = (char*) malloc(30*sizeof(char));
   max = 30;
+  printf("Ingrese la otra tarea: ");
   getline(&tareaSec, &max, stdin);
+
+  Pair *aux = searchMap(lista, tareaSec);
+  if (!aux) {
+    printf("Una de las tareas no fue ingresada\n");
+    return;
+  }
+  Pair *princ = searchMap(lista, tareaPrim);
+  if(!princ) {
+    printf("Una de las tareas no fue ingresada\n");
+    return;
+  }
+  Tarea *dataPrin = princ->value;
+  pushFront(dataPrin->post, aux->value);
+  return;
+}
+
+void mostrarTareas(Heap *pq, HashMap *lista) {
   
 }
 
 
 
 
-
-
 int main() {
-  Heap *pq = createHeap();
+  Heap *tareasOrd = createHeap();
+  HashMap *lista = createMap(10);
 
   char opcion[30];
   while (1) {
@@ -46,12 +77,12 @@ int main() {
       strcpy(opcion, "next");
     switch (opcion[0]) {
       case '1' :
-        lecturaAgregar(pq);
+        lecturaAgregar(lista);
         break;
 
       case '2' :
-        
-        // break;
+        establecerPrior(lista);
+        break;
 
       case '3' :
         // break;
@@ -62,7 +93,8 @@ int main() {
 
       case '0' :
         printf("Hasta luego\n");
-        free(pq);
+        free(tareasOrd);
+        free(lista);
         return 0;
 
       default:
