@@ -38,7 +38,7 @@ void lecturaAgregar(HashMap *lista) {
 void establecerPrior(HashMap *lista) {
   char *tareaPrim = (char*) malloc(30*sizeof(char));
   size_t max = 30;
-  printf("Ingrese la tarea que debe realizarse primero:");
+  printf("Ingrese la tarea que debe realizarse primero: ");
   getline(&tareaPrim, &max, stdin);
 
   char *tareaSec = (char*) malloc(30*sizeof(char));
@@ -60,9 +60,11 @@ void establecerPrior(HashMap *lista) {
   return;
 }
 
-void mostrarTareas(Heap *pq, HashMap *lista) {
+// void mostrarTareas(Heap *pq, HashMap *lista) {
   
-}
+// }
+
+
 
 
 
@@ -103,7 +105,6 @@ int main() {
       default:
         printf("Opción inválida. Por favor, ingrese un número válido.\n");
         break;
+    }
   }
-}
-  
 }
