@@ -69,6 +69,7 @@ void establecerPrior(HashMap *lista) {
 void mostrar(HashMap *lista, Heap *monticulo) {
   Pair *current;
   int quedan = 1;
+  printf("Nombre        Prioridad        Precedente/s\n");
   while (quedan){
     current = firstMap(lista);
     while (current && current->key) {
@@ -103,9 +104,14 @@ void mostrar(HashMap *lista, Heap *monticulo) {
     while (heap_top(monticulo)) {
       Tarea *hacer = heap_top(monticulo);
       Tarea *antes = first(hacer->prec);
-      printf("%s, %d", hacer->nombre, hacer->prior);
+      char tarea[30];
+      strcpy(tarea, hacer->nombre);
+      tarea[strlen(tarea) - 1] = '\0';
+      printf("%s, %d", tarea, hacer->prior);
       while (antes) {
-        printf(", %s", antes->nombre);
+        strcpy(tarea, antes->nombre);
+        tarea[strlen(tarea) - 1] = '\0';
+        printf(", %s", tarea);
         antes = next(hacer->prec);
       }
       printf(".\n");
