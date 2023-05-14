@@ -24,7 +24,7 @@ void* heap_top(Heap* pq){
   }
 
   else if (pq->size == 0) {
-    printf("La cola esta vacia\n");
+    // printf("La cola esta vacia\n");
     return NULL;
   }
 
