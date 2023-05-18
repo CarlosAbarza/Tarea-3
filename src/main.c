@@ -137,15 +137,59 @@ void mostrar(HashMap *lista) {
   desmarcar(lista);
 }
 
-void eliminarTarea(HashMap *lista) {}
+void eliminarDePrec(Tarea *elim) {
+  Tarea *dsp = first(elim->soyPrec);
+  while (dsp) {
+    eraseMap(dsp->misPrec, elim->nombre);
+    dsp = next(elim->soyPrec);
+  }
+}
+
+void eliminarTarea(HashMap *lista) {
+  char *nombre = (char *)malloc(30 * sizeof(char));
+  size_t max = 30;
+  printf("Ingrese el nombre de la tarea que desea eliminar: ");
+  size_t wunus = getline(&nombre, &max, stdin);
+  if (!nombre || !wunus) {
+    printf("Error al leer el nombre de la tarea\n");
+    return;
+  }
+
+  Tarea *tareaElim = valueRet(searchMap(lista, nombre));
+  if (!tareaElim) {
+    printf("La tarea ingresada no esta en la lista\n");
+    return;
+  }
+
+  Tarea *dsp = first(tareaElim->soyPrec);
+  if (!dsp) {
+    eraseMap(lista, tareaElim->nombre);
+    printf("Tarea eliminada con éxito\n");
+    return;
+  }
+
+  printf("¿Estás seguro que desea eliminar la tarea?\n");
+  printf("Para confirmar ingrese 1 | Para cancelar ingrese 0\n");
+  short opcion;
+  scanf("%hd", &opcion);
+  getchar();
+  if (opcion == 1) {
+    eliminarDePrec(tareaElim);
+    eraseMap(lista, tareaElim->nombre);
+    printf("Tarea eliminada con éxito\n");
+  }
+  else 
+    return;
+}
 
 int main() {
   HashMap *lista = createMap(10);
-
+  size_t wunus;
   char opcion[30];
   while (1) {
     printMenu();
-    size_t wunus = scanf("%[^\n]", opcion);
+    wunus = 8;
+    wunus = scanf("%[^\n]", opcion);
     getchar();
     if (strlen(opcion) > 1)
       strcpy(opcion, "next");
@@ -163,7 +207,7 @@ int main() {
       break;
 
     case '4':
-      printf("Aun en desarrollo\n");
+      eliminarTarea(lista);
       break;
 
     case '0':
