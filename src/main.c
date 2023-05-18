@@ -10,10 +10,9 @@
 typedef struct {
   char *nombre;
   int prior;
-  int completa;
   int visit;
-  int n_prec;
-  List *prec;
+  HashMap *misPrec;
+  List *soyPrec;
 } Tarea;
 
 void lecturaAgregar(HashMap *lista) {
@@ -22,18 +21,16 @@ void lecturaAgregar(HashMap *lista) {
   int prioridad;
 
   printf("Ingrese el nombre de la tarea: ");
-  getline(&tarea, &max, stdin);
+  size_t wunus = getline(&tarea, &max, stdin);
   printf("Ingrese su nivel de prioridad: ");
-  scanf("%d", &prioridad);
+  wunus = scanf("%d", &prioridad);
   getchar();
   Tarea *data = (Tarea *)malloc(sizeof(Tarea));
   data->nombre = strdup(tarea);
   data->prior = prioridad;
-  data->completa = 0;
   data->visit = 0;
-  data->n_prec = 0;
-  data->prec = createList();
-
+  data->misPrec = createMap(5);
+  data->soyPrec = createList();
   insertMap(lista, tarea, data);
 }
 
@@ -41,22 +38,22 @@ void establecerPrior(HashMap *lista) {
   char *tareaPrim = (char *)malloc(30 * sizeof(char));
   size_t max = 30;
   printf("Ingrese la tarea que debe realizarse primero: ");
-  getline(&tareaPrim, &max, stdin);
+  size_t wunus = getline(&tareaPrim, &max, stdin);
 
   char *tareaSec = (char *)malloc(30 * sizeof(char));
   max = 30;
   printf("Ingrese la otra tarea: ");
-  getline(&tareaSec, &max, stdin);
+  wunus = getline(&tareaSec, &max, stdin);
 
-  Pair *aux = searchMap(lista, tareaSec);
-  Pair *princ = searchMap(lista, tareaPrim);
-  if (!aux || !princ) {
+  Tarea *dataSec = valueRet(searchMap(lista, tareaSec));
+  Tarea *dataPrin = valueRet(searchMap(lista, tareaPrim));
+  if (!dataSec || !dataPrin) {
     printf("Una de las tareas no fue ingresada\n");
     return;
   }
-  Tarea *dataSec = aux->value;
-  pushFront(dataSec->prec, princ->value);
-  dataSec->n_prec++;
+  
+  insertMap(dataSec->misPrec, dataPrin->nombre, dataPrin);
+  pushBack(dataPrin->soyPrec, dataSec);
   free(tareaPrim);
   free(tareaSec);
   return;
@@ -65,80 +62,76 @@ void establecerPrior(HashMap *lista) {
 // void mostrarTareas(Heap *pq, HashMap *lista) {
 
 // }
-
-void mostrar(HashMap *lista, Heap *monticulo) {
-  Pair *current;
+void mostrar(HashMap*lista, Heap *monticulo) {
+  Tarea *current;
   int quedan = 1;
   printf("                       Nombre|Prioridad |Precedente/s\n");
   while (quedan){
-    current = firstMap(lista);
-    while (current && current->key) {
+    current = valueRet(firstMap(lista));
+    while (current) {
       quedan = 0;
-      Tarea *data = current->value;
-      Tarea *precedentes = first(data->prec);
-      if (!precedentes && !data->visit) {
-        heap_push(monticulo, data, data->prior);
-        data->visit = 1;
+      Tarea *precedentes = NULL;
+      if (sizeMap(current->misPrec))
+        precedentes = valueRet(firstMap(current->misPrec));
+      if (!precedentes && !current->visit) {
+        heap_push(monticulo, current, current->prior);
+        current->visit = 1;
       }
-      else if (!data->visit){
+      else if (!current->visit){
         while (precedentes) {
-          Pair *prec = searchMap(lista, precedentes->nombre);
-          Tarea *aux = prec->value;
-          if (!aux->visit) {
+          // Tarea *tareaPrec = valueRet(searchMap(lista, precedentes->nombre));
+          if (!precedentes->visit) {
             quedan = 1;
             precedentes = NULL;
             continue;
           }
-          precedentes = next(data->prec);
+          precedentes = valueRet(nextMap(current->misPrec));
         }
         if (!quedan) {
-          heap_push(monticulo, data, data->prior);
-          data->visit = 1;
+          heap_push(monticulo, current, current->prior);
+          current->visit = 1;
         }
-        searchMap(lista, current->key);
+        searchMap(lista, current->nombre);
       }
-      current = nextMap(lista);
+      current = valueRet(nextMap(lista));
     }
     if (!heap_top(monticulo)) 
       break;
-    while (heap_top(monticulo)) {
-      Tarea *hacer = heap_top(monticulo);
-      Tarea *antes = first(hacer->prec);
-      char tarea[30];
-      strcpy(tarea, hacer->nombre);
-      for (int i = 0; i < (30 - strlen(tarea)); i++)
-        printf(" ");
+    
+    Tarea *hacer = heap_top(monticulo);
+    Tarea *antes = valueRet(firstMap(hacer->misPrec));
+    char tarea[30];
+    strcpy(tarea, hacer->nombre);
+    for (int i = 0; i < (30 - strlen(tarea)); i++)
+      printf(" ");
+    tarea[strlen(tarea) - 1] = '\0';
+    printf("%s|", tarea);
+    char prio[5];
+    sprintf(prio, "%d", hacer->prior);
+    for (int i = 0; i < (10 - strlen(prio)); i++)
+      printf(" ");
+    printf("%d|", hacer->prior);
+    int cont = 0;
+    while (antes) {
+      strcpy(tarea, antes->nombre);
       tarea[strlen(tarea) - 1] = '\0';
-      printf("%s|", tarea);
-      char prio[5];
-      sprintf(prio, "%d", hacer->prior);
-      for (int i = 0; i < (10 - strlen(prio)); i++)
-        printf(" ");
-      printf("%d|", hacer->prior);
-      int cont = 0;
-      while (antes) {
-        strcpy(tarea, antes->nombre);
-        tarea[strlen(tarea) - 1] = '\0';
-        if (cont != 0)
-          printf(", ");
-        printf("%s", tarea);
-        antes = next(hacer->prec);
-        cont++;
-      }
-      printf("\n");
-      heap_pop(monticulo);
+      if (cont != 0)
+        printf(", ");
+      printf("%s", tarea);
+      antes = valueRet(nextMap(hacer->misPrec));
+      cont++;
     }
+    printf("\n");
+    heap_pop(monticulo);
+    
     quedan = 1;
   }
-  current = firstMap(lista);
+  current = valueRet(firstMap(lista));
   while (current) {
-    Tarea *data = current->value;
-    data->visit = 0;
-    current = nextMap(lista);
+    current->visit = 0;
+    current = valueRet(nextMap(lista));
   }
 }
-
-
 
 int main() {
   Heap *tareasOrd = createHeap();
@@ -147,7 +140,7 @@ int main() {
   char opcion[30];
   while (1) {
     printMenu();
-    scanf("%[^\n]", opcion);
+    size_t wunus = scanf("%[^\n]", opcion);
     getchar();
     if (strlen(opcion) > 1)
       strcpy(opcion, "next");

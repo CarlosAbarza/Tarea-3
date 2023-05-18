@@ -25,4 +25,6 @@ void enlarge(HashMap * map);
 
 long sizeMap(HashMap *jugadores);
 
+void* valueRet(Pair *key_value);
+
 #endif /* HashMap_h */

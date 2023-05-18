@@ -138,3 +138,8 @@ Pair * nextMap(HashMap * map) {
 long sizeMap(HashMap *jugadores){
   return jugadores->size;
 }
+
+void* valueRet(Pair *key_value) {
+  if (!key_value || !key_value->key) return NULL;
+  return key_value->value;
+}
