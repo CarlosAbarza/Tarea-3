@@ -11,8 +11,9 @@ typedef struct {
   char *nombre;
   int prior;
   int visit;
+  int most;
   HashMap *misPrec;
-  List *soyPrec;
+  HashMap *soyPrec;
 } Tarea;
 
 void lecturaAgregar(HashMap *lista) {
@@ -29,8 +30,9 @@ void lecturaAgregar(HashMap *lista) {
   data->nombre = strdup(tarea);
   data->prior = prioridad;
   data->visit = 0;
+  data->most = 0;
   data->misPrec = createMap(5);
-  data->soyPrec = createList();
+  data->soyPrec = createMap(5);
   insertMap(lista, tarea, data);
 }
 
@@ -53,7 +55,7 @@ void establecerPrior(HashMap *lista) {
   }
 
   insertMap(dataSec->misPrec, dataPrin->nombre, dataPrin);
-  pushBack(dataPrin->soyPrec, dataSec);
+  insertMap(dataPrin->soyPrec, dataSec->nombre, dataSec);
   free(tareaPrim);
   free(tareaSec);
   return;
@@ -63,6 +65,7 @@ void desmarcar(HashMap *tareas) {
   Tarea *current = valueRet(firstMap(tareas));
   while (current) {
     current->visit = 0;
+    current->most = 0;
     current = valueRet(nextMap(tareas));
   }
 }
@@ -91,6 +94,7 @@ void mostrarMont(Heap *cola) {
     antes = valueRet(nextMap(hacer->misPrec));
     cont++;
   }
+  hacer->most = 1;
   printf("\n");
   heap_pop(cola);
 }
@@ -113,7 +117,7 @@ void mostrar(HashMap *lista) {
         current->visit = 1;
       } else if (!current->visit) {
         while (precedentes) {
-          if (!precedentes->visit) {
+          if (!precedentes->visit || !precedentes->most) {
             quedan = 1;
             precedentes = NULL;
             continue;
@@ -133,15 +137,23 @@ void mostrar(HashMap *lista) {
     mostrarMont(monticulo);
     quedan = 1;
   }
-  current = valueRet(firstMap(lista));
+  // current = valueRet(firstMap(lista));
   desmarcar(lista);
 }
 
-void eliminarDePrec(Tarea *elim) {
-  Tarea *dsp = first(elim->soyPrec);
+void eliminarDeSusPrec(Tarea *elim) {
+  Tarea *dsp = valueRet(firstMap(elim->soyPrec));
   while (dsp) {
     eraseMap(dsp->misPrec, elim->nombre);
-    dsp = next(elim->soyPrec);
+    dsp = valueRet(nextMap(elim->soyPrec));
+  }
+}
+
+void eliminarDeMisPrec(Tarea *elim) {
+  Tarea *ant = valueRet(firstMap(elim->misPrec));
+  while (ant) {
+    eraseMap(ant->soyPrec, elim->nombre);
+    ant = valueRet(nextMap(elim->misPrec));
   }
 }
 
@@ -161,24 +173,28 @@ void eliminarTarea(HashMap *lista) {
     return;
   }
 
-  Tarea *dsp = first(tareaElim->soyPrec);
-  if (!dsp) {
+  Tarea *ant = valueRet(firstMap(tareaElim->misPrec));
+  Tarea *dsp = valueRet(firstMap(tareaElim->soyPrec));
+  if (!ant) {
+    eliminarDeSusPrec(tareaElim);
     eraseMap(lista, tareaElim->nombre);
     printf("Tarea eliminada con éxito\n");
     return;
   }
 
   printf("¿Estás seguro que desea eliminar la tarea?\n");
-  printf("Para confirmar ingrese 1 | Para cancelar ingrese 0\n");
-  short opcion;
-  scanf("%hd", &opcion);
+  printf("Para confirmar ingrese s | Para cancelar ingrese n\n");
+  char opcion;
+  scanf("%c", &opcion);
   getchar();
-  if (opcion == 1) {
-    eliminarDePrec(tareaElim);
+
+  if (opcion == 's') {
+    if (dsp)
+      eliminarDeSusPrec(tareaElim);
+    eliminarDeMisPrec(tareaElim);
     eraseMap(lista, tareaElim->nombre);
     printf("Tarea eliminada con éxito\n");
-  }
-  else 
+  } else
     return;
 }
 

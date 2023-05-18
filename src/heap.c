@@ -1,23 +1,22 @@
+#include "heap.h"
+#include <ctype.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-#include <ctype.h>
-#include "heap.h"
 
-typedef struct nodo{
-   void* data;
-   int priority;
-}heapElem;
+typedef struct nodo {
+  void *data;
+  int priority;
+} heapElem;
 
-typedef struct Heap{
-  heapElem* heapArray;
+typedef struct Heap {
+  heapElem *heapArray;
   int size;
   int capac;
 } Heap;
 
-
-void* heap_top(Heap* pq){
+void *heap_top(Heap *pq) {
   if (!pq) {
     printf("No se ingreso una cola\n");
     return NULL;
@@ -31,8 +30,8 @@ void* heap_top(Heap* pq){
   return pq->heapArray[0].data;
 }
 
-void* crearNode(void* data, int priority) {
-  heapElem *new = (heapElem*) malloc(sizeof(heapElem));
+void *crearNode(void *data, int priority) {
+  heapElem *new = (heapElem *)malloc(sizeof(heapElem));
   if (!new) {
     printf("No se pudo reservar memoria\n");
     return NULL;
@@ -43,16 +42,16 @@ void* crearNode(void* data, int priority) {
   return new;
 }
 
-
-void heap_push(Heap* pq, void* data, int priority){
+void heap_push(Heap *pq, void *data, int priority) {
   if (!pq) {
     printf("No se ingreso una cola\n");
     return;
   }
-  
+
   if (pq->size == pq->capac) {
     pq->capac = (pq->capac * 2) + 1;
-    pq->heapArray = (heapElem*) realloc(pq->heapArray, pq->capac*sizeof(heapElem));
+    pq->heapArray =
+        (heapElem *)realloc(pq->heapArray, pq->capac * sizeof(heapElem));
     if (!pq->heapArray) {
       printf("Error al reservar memoria\n");
       return;
@@ -60,48 +59,50 @@ void heap_push(Heap* pq, void* data, int priority){
   }
 
   heapElem *new = crearNode(data, priority);
-  if (!new) return;
-  
+  if (!new)
+    return;
+
   pq->heapArray[pq->size] = *new;
   free(new);
   int aux = pq->size;
   pq->size++;
 
-  while (pq->heapArray[aux].priority < pq->heapArray[(aux-1) / 2].priority) {
+  while (aux > 0 &&
+         pq->heapArray[aux].priority < pq->heapArray[(aux - 1) / 2].priority) {
     heapElem temp = pq->heapArray[aux];
-    pq->heapArray[aux] = pq->heapArray[(aux-1)/2];
-    aux = (aux-1) / 2;
-    pq->heapArray[aux] = temp;
+    pq->heapArray[aux] = pq->heapArray[(aux - 1) / 2];
+    pq->heapArray[(aux - 1) / 2] = temp;
+    aux = (aux - 1) / 2;
   }
   return;
 }
 
 void reordenar(Heap *pq) {
   int aux = 0;
-  while (aux*2 + 2 <= pq->size) {
-    int hijoIzq = pq->heapArray[2*aux + 1].priority;
-    int hijoDer = pq->heapArray[2*aux + 2].priority;
-    if (pq->heapArray[aux].priority > hijoIzq && pq->heapArray[aux].priority < hijoDer) 
+  while (aux * 2 + 2 <= pq->size) {
+    int hijoIzq = pq->heapArray[2 * aux + 1].priority;
+    int hijoDer = pq->heapArray[2 * aux + 2].priority;
+    if (pq->heapArray[aux].priority < hijoIzq &&
+        pq->heapArray[aux].priority < hijoDer)
       return;
-      
 
     else if (hijoIzq < hijoDer) {
       heapElem temp = pq->heapArray[aux];
-      pq->heapArray[aux] = pq->heapArray[2*aux + 1];
-      aux = aux*2 + 1;
+      pq->heapArray[aux] = pq->heapArray[2 * aux + 1];
+      aux = aux * 2 + 1;
       pq->heapArray[aux] = temp;
     }
 
     else {
       heapElem temp = pq->heapArray[aux];
-      pq->heapArray[aux] = pq->heapArray[2*aux + 2];
-      aux = aux*2 + 2;
+      pq->heapArray[aux] = pq->heapArray[2 * aux + 2];
+      aux = aux * 2 + 2;
       pq->heapArray[aux] = temp;
     }
   }
 }
 
-void heap_pop(Heap* pq){
+void heap_pop(Heap *pq) {
   if (!pq) {
     printf("No se ingreso una cola\n");
     return;
@@ -112,19 +113,19 @@ void heap_pop(Heap* pq){
     return;
   }
 
-  pq->heapArray[0] = pq->heapArray[pq->size-1];
+  pq->heapArray[0] = pq->heapArray[pq->size - 1];
   pq->size--;
   reordenar(pq);
 }
 
-Heap* createHeap(){
-  Heap *new = (Heap*) malloc(sizeof(Heap));
+Heap *createHeap() {
+  Heap *new = (Heap *)malloc(sizeof(Heap));
   if (!new) {
     printf("No se pudo crear el heap\n");
     return NULL;
   }
 
-  new->heapArray = (heapElem*) malloc(3* sizeof(heapElem));
+  new->heapArray = (heapElem *)malloc(3 * sizeof(heapElem));
   if (!new->heapArray) {
     printf("No se pudo reservar memoria para el heap\n");
     return NULL;
