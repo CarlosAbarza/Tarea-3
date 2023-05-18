@@ -16,6 +16,11 @@ typedef struct {
   HashMap *soyPrec;
 } Tarea;
 
+/* La función lee el nombre y la prioridad de la tarea que se desea
+ingresar, inicializa la tarea con los datos ingresados y la guarda
+en una tabla hash.
+*/
+
 void lecturaAgregar(HashMap *lista) {
   char *tarea = (char *)malloc(30 * sizeof(char));
   size_t max = 30;
@@ -35,6 +40,14 @@ void lecturaAgregar(HashMap *lista) {
   data->soyPrec = createMap(5);
   insertMap(lista, tarea, data);
 }
+
+/* La función lee el nombre de las dos tareas en las que se quiere
+establecer la relación de precedencia. Primero lee la tarea que será
+el precedente y luego la tarea a la que se le ingresará el precedente.
+Una vez leídas, guarda la primera tarea en el atributo "misPrec" de
+la segunda tarea, y guarda la segunda tarea en el atributo "soyPrec"
+de la primera tarea.
+*/
 
 void establecerPrior(HashMap *lista) {
   char *tareaPrim = (char *)malloc(30 * sizeof(char));
@@ -61,6 +74,10 @@ void establecerPrior(HashMap *lista) {
   return;
 }
 
+/* Se restablece la variable "visit" y "most" para cada tarea, evitando
+problemas al mostrarlas nuevamente.
+*/
+
 void desmarcar(HashMap *tareas) {
   Tarea *current = valueRet(firstMap(tareas));
   while (current) {
@@ -69,6 +86,10 @@ void desmarcar(HashMap *tareas) {
     current = valueRet(nextMap(tareas));
   }
 }
+
+/* Muestra la tarea que debería realizarse primero, mostrando su nombre,
+prioridad y sus precedentes en caso de tenerlos.
+*/
 
 void mostrarMont(Heap *cola) {
   Tarea *hacer = heap_top(cola);
@@ -98,6 +119,11 @@ void mostrarMont(Heap *cola) {
   printf("\n");
   heap_pop(cola);
 }
+
+/* Arma una cola con prioridad, sacando únicamente las tareas que son
+posibles de realizar en el momento. En caso de tener precedentes, no
+las agrega a la cola hasta que sus precedentes hayan sido mostrados.
+*/
 
 void mostrar(HashMap *lista) {
   Heap *monticulo = createHeap();
@@ -137,9 +163,12 @@ void mostrar(HashMap *lista) {
     mostrarMont(monticulo);
     quedan = 1;
   }
-  // current = valueRet(firstMap(lista));
   desmarcar(lista);
 }
+
+/* Elimina la tarea de todas las tareas en las que está marcada como
+precedente, esto se determina utilizando el atributo 'soyPrec'.
+*/
 
 void eliminarDeSusPrec(Tarea *elim) {
   Tarea *dsp = valueRet(firstMap(elim->soyPrec));
@@ -149,6 +178,11 @@ void eliminarDeSusPrec(Tarea *elim) {
   }
 }
 
+/* Elimina la tarea en las que lo tienen marcado como que son sus
+precedentes, es decir, desde "soyPrec" de las tareas registradas
+en "misPrec" de la eliminada.
+*/
+
 void eliminarDeMisPrec(Tarea *elim) {
   Tarea *ant = valueRet(firstMap(elim->misPrec));
   while (ant) {
@@ -156,6 +190,12 @@ void eliminarDeMisPrec(Tarea *elim) {
     ant = valueRet(nextMap(elim->misPrec));
   }
 }
+
+/* Realiza la lectura de la tarea que se desea marcar como completada.
+En caso de que la tarea tenga precedentes, se solicitará una
+confirmación. Si se confirma, se procede a eliminar la tarea y las
+relaciones de precedencia en las que estaba presente.
+*/
 
 void eliminarTarea(HashMap *lista) {
   char *nombre = (char *)malloc(30 * sizeof(char));
@@ -185,7 +225,7 @@ void eliminarTarea(HashMap *lista) {
   printf("¿Estás seguro que desea eliminar la tarea?\n");
   printf("Para confirmar ingrese s | Para cancelar ingrese n\n");
   char opcion;
-  scanf("%c", &opcion);
+  wunus = scanf("%c", &opcion);
   getchar();
 
   if (opcion == 's') {
@@ -194,9 +234,18 @@ void eliminarTarea(HashMap *lista) {
     eliminarDeMisPrec(tareaElim);
     eraseMap(lista, tareaElim->nombre);
     printf("Tarea eliminada con éxito\n");
-  } else
-    return;
+  } 
+  else if (opcion == 'n') 
+    printf("Eliminación cancelada\n");
+  
+  else 
+    printf("Opcion invalida, acción cancelada\n");
+  
 }
+
+/* Aquí se realiza el menú, donde se ingresa la opción deseada y se
+deriva a la función correspondiente para cumplir la tarea requerida.
+*/
 
 int main() {
   HashMap *lista = createMap(10);
