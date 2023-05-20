@@ -94,10 +94,12 @@ prioridad y sus precedentes en caso de tenerlos.
 void mostrarMont(Heap *cola) {
   Tarea *hacer = heap_top(cola);
   Tarea *antes = valueRet(firstMap(hacer->misPrec));
-  char tarea[30];
+  char tarea[100];
   strcpy(tarea, hacer->nombre);
-  for (int i = 0; i < (30 - strlen(tarea)); i++)
-    printf(" ");
+  if (strlen(tarea) < 30) {
+    for (int i = 0; i < (30 - strlen(tarea)); i++)
+      printf(" ");
+  }
   tarea[strlen(tarea) - 1] = '\0';
   printf("%s|", tarea);
   char prio[5];
@@ -128,12 +130,15 @@ las agrega a la cola hasta que sus precedentes hayan sido mostrados.
 void mostrar(HashMap *lista) {
   Heap *monticulo = createHeap();
   Tarea *current;
-  int quedan = 1;
+  int agregar;
+  int contV = 0;
   printf("                       Nombre|Prioridad |Precedente/s\n");
-  while (quedan) {
+  while (1) {
     current = valueRet(firstMap(lista));
+    if (contV == sizeMap(lista)) 
+      current = NULL;
     while (current) {
-      quedan = 0;
+      agregar = 1;
       Tarea *precedentes = NULL;
       if (sizeMap(current->misPrec))
         precedentes = valueRet(firstMap(current->misPrec));
@@ -141,18 +146,20 @@ void mostrar(HashMap *lista) {
       if (!precedentes && !current->visit) {
         heap_push(monticulo, current, current->prior);
         current->visit = 1;
+        contV++;
       } else if (!current->visit) {
         while (precedentes) {
           if (!precedentes->visit || !precedentes->most) {
-            quedan = 1;
+            agregar = 0;
             precedentes = NULL;
             continue;
           }
           precedentes = valueRet(nextMap(current->misPrec));
         }
-        if (!quedan) {
+        if (agregar) {
           heap_push(monticulo, current, current->prior);
           current->visit = 1;
+          contV++;
         }
       }
       current = valueRet(nextMap(lista));
@@ -161,7 +168,6 @@ void mostrar(HashMap *lista) {
       break;
 
     mostrarMont(monticulo);
-    quedan = 1;
   }
   desmarcar(lista);
 }
@@ -256,6 +262,7 @@ int main() {
     wunus = 8;
     wunus = scanf("%[^\n]", opcion);
     getchar();
+    printf("\n------------------------------------------------------------\n\n");
     if (strlen(opcion) > 1)
       strcpy(opcion, "next");
     switch (opcion[0]) {
@@ -284,5 +291,6 @@ int main() {
       printf("Opción inválida. Por favor, ingrese un número válido.\n");
       break;
     }
+    printf("\n------------------------------------------------------------\n");
   }
 }
