@@ -2,37 +2,32 @@
 
 # Guía de compilación y ejecución del programa:
 
-
 ## Pasos para compilar y ejecutar el programa
 
-Para compilar y ejecutar el programa, sigue estos pasos:
+Sigue estos pasos para compilar y ejecutar el programa:
 
 1. Clona el repositorio desde GitHub ejecutando el siguiente comando en tu terminal:
-    ```
-    git clone https://github.com/CarlosAbarza/Tarea-3.git
-    ```
-    
-2. Abre una terminal en el directorio en el que se encuentran los archivos `main.c` y los archivos que componene el programa:
-    - hashmap.c: Implementación de la tabla hash.
-    - hashmap.h: Encabezado para la tabla hash.
-    - list.c: Implementación de la lista enlazada.
-    - list.h: Encabezado para la lista enlazada.
-    - main.c: Código principal del programa.
-    - Makefile: Archivo Makefile para compilar y enlazar el proyecto.
-    - printformato.c: Funciones de formato para la salida impresa.
-    - printformato.h: Encabezado para las funciones de formato.
-    - README.md: Documentación del proyecto.
-    - stack.h: Encabezado para la estructura de datos de pila
+   ```
+   git clone https://github.com/CarlosAbarza/Tarea-3.git
+   ```
 
-3. Escribe el comando `make -s` para compilar el programa:
-    ```
-    make -s
-    ```
-    
-4. Escribe el comando `./main` para ejecutar el programa:
-    ```
-    ./main.c
-    ```
+2. Abre una terminal en el directorio raíz del proyecto, donde se encuentran los archivos `.c`, `.h` y otros archivos.
+
+3. Ejecuta el siguiente comando para compilar el programa utilizando el archivo `CMakeLists.txt`:
+   ```bash
+   cmake .
+   make
+   ```
+
+   Esto generará los archivos de objeto y el ejecutable del programa.
+
+4. Una vez compilado con éxito, ejecuta el programa con el siguiente comando:
+   ```bash
+   ./main
+   ```
+
+   Esto ejecutará el programa y mostrará los resultados en la terminal.
+
 
 ## Opciones que funcionan:
 1.  Agregar tarea (tarea, prioridad)
