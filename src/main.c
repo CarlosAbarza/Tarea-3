@@ -96,8 +96,8 @@ void mostrarMont(Heap *cola) {
   Tarea *antes = valueRet(firstMap(hacer->misPrec));
   char tarea[100];
   strcpy(tarea, hacer->nombre);
-  if (strlen(tarea) < 30) {
-    for (int i = 0; i < (30 - strlen(tarea)); i++)
+  if (strlen(tarea) < 35) {
+    for (int i = 0; i < (35 - strlen(tarea)); i++)
       printf(" ");
   }
   tarea[strlen(tarea) - 1] = '\0';
@@ -128,11 +128,15 @@ las agrega a la cola hasta que sus precedentes hayan sido mostrados.
 */
 
 void mostrar(HashMap *lista) {
+  if (!sizeMap(lista)) {
+    printf("No hay tareas registradas\n");
+    return;
+  }
   Heap *monticulo = createHeap();
   Tarea *current;
   int agregar;
   int contV = 0;
-  printf("                       Nombre|Prioridad |Precedente/s\n");
+  printf("                            Nombre|Prioridad |Precedente/s\n");
   while (1) {
     current = valueRet(firstMap(lista));
     if (contV == sizeMap(lista)) 
@@ -170,6 +174,7 @@ void mostrar(HashMap *lista) {
     mostrarMont(monticulo);
   }
   desmarcar(lista);
+  free(monticulo);
 }
 
 /* Elimina la tarea de todas las tareas en las que está marcada como
