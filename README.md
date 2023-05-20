@@ -9,7 +9,7 @@ Para compilar y ejecutar el programa, sigue estos pasos:
 
 1. Clona el repositorio desde GitHub ejecutando el siguiente comando en tu terminal:
     ```
-    git clone (https://github.com/CarlosAbarza/Tarea-3/tree/63aec6a9b2cd196d33422de0171748bdf4169a8a)
+    git clone https://github.com/CarlosAbarza/Tarea-3.git
     ```
     
 2. Abre una terminal en el directorio en el que se encuentran los archivos `main.c` y los archivos que componene el programa:
