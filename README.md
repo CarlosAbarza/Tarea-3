@@ -50,20 +50,17 @@ La función solicita que se ingrese el nombre de dos tareas en las que se quiera
 
 
 ### 3.  Mostrar tareas por hacer
-La función agregarItemDef se encarga de agregar un ítem al inventario del jugador y actualizar el mapa de ítems con la información de qué jugadores tienen cada ítem.
+Esta función no recibe ningún parámetro externo. Su objetivo es mostrar por pantalla las tareas ordenadas según su prioridad y su precedencia. La precedencia es especialmente importante, ya que puede hacer que tareas con menor prioridad se realicen antes que tareas con prioridad máxima.
 
-La función agregarItemBuscar pide al usuario el nombre del jugador y del ítem a agregar, busca al jugador en el mapa de jugadores y, si existe, agrega el ítem al inventario del jugador llamando a agregarItemDef. También guarda esta acción en el historial del jugador.
+La función comienza recorriendo la lista de tareas y colocando en un heap las tareas que no tienen precedentes o cuyos precedentes ya han sido mostrados, ya que esto indica que pueden ser realizadas en ese momento. Una vez que todas las tareas han sido extraídas del heap y mostradas, la función finaliza su ejecución.
 
 
 ### 4.  Marcar tarea como completada (tarea)
-La función eliminarItemJugadores se encarga de eliminar un ítem del inventario de un jugador y actualizar el mapa de ítems con la información de qué jugadores tienen cada ítem.
+Esta función recibe el nombre de la tarea que se desea marcar como completada. En caso de que la tarea no tenga relaciones de precedencia, es decir, no es, ni tiene precedentes, simplemente se elimina y se termina la ejecución.
 
-Primero, la función pide al usuario que ingrese el nombre del jugador. Luego, busca al jugador en el mapa de jugadores utilizando el nombre ingresado. Si el jugador no existe, muestra un mensaje indicando esto y retorna. Si el jugador existe, pide al usuario que ingrese el nombre del ítem a eliminar.
+En caso de que la tarea sea precedente de otra, pero no tenga precedentes en sí misma, se elimina de la lista de precedentes de las otras tareas y se elimina del mapa de todas las tareas.
 
-Posteriormente, la función eliminaItemDelJugador se encarga de buscar el ítem en el inventario del jugador y, si lo encuentra, lo elimina del inventario y actualiza el mapa de ítems correspondiente. Si el ítem no existe en el inventario del jugador, muestra un mensaje indicándolo.
-
-Si se logra eliminar el ítem, se guarda esta acción en el historial del jugador utilizando la estructura Acciones y la pila versiones del jugador.
-
+En el último caso, cuando la tarea tiene precedentes y se desea marcar como completada, se muestra un mensaje preguntando si se está seguro de esta decisión. En caso de confirmar, la tarea se elimina y se eliminan las relaciones de precedencia asociadas a ella.
 
 
 
