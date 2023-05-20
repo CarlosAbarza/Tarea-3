@@ -11,7 +11,9 @@ Sigue estos pasos para compilar y ejecutar el programa:
    git clone https://github.com/CarlosAbarza/Tarea-3.git
    ```
 
+
 2. Abre una terminal en el directorio raíz del proyecto, donde se encuentran los archivos `.c`, `.h` y otros archivos.
+
 
 3. Ejecuta el siguiente comando para compilar el programa utilizando el archivo `CMakeLists.txt`:
    ```bash
@@ -20,6 +22,7 @@ Sigue estos pasos para compilar y ejecutar el programa:
    ```
 
    Esto generará los archivos de objeto y el ejecutable del programa.
+
 
 4. Una vez compilado con éxito, ejecuta el programa con el siguiente comando:
    ```bash
