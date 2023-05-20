@@ -52,7 +52,7 @@ Esta función no recibe ningún parámetro externo. Su objetivo es mostrar por p
 
 La función comienza recorriendo la lista de tareas y colocando en un heap las tareas que no tienen precedentes o cuyos precedentes ya han sido mostrados, ya que esto indica que pueden ser realizadas en ese momento. Una vez que todas las tareas han sido extraídas del heap y mostradas, la función finaliza su ejecución.
 
-Esta función está diseñada idealmente para tareas con menos de 34 caracteres, pero también puede funcionar para tareas con un largo de hasta 99 caracteres.
+Esta función está diseñada idealmente para tareas con menos de 34 caracteres, pero también puede funcionar para tareas con un largo de hasta 98 caracteres.
 
 
 ### 4.  Marcar tarea como completada (tarea)
